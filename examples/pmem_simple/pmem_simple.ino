@@ -14,7 +14,7 @@ void setup(){
   pmem.writeInt("counter", counter+1);
   pmem.commit();
 
-  Serial.printf("This is my %d boot!", counter);
+  Serial.printf("\nThis is my %d boot!\n", counter);
 }
 
 void loop(){
