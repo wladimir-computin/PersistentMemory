@@ -25,7 +25,7 @@ Look into [/examples](https://github.com/wladimir-computin/PersistentMemory/blob
 
 ### Constructors:
 ```cpp
-PersistentMemory(String settingsfile, bool create=false);
+PersistentMemory(String vault, bool create=false);
 ```
 
 ### Static methods:

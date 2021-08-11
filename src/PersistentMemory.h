@@ -28,7 +28,7 @@ class PersistentMemory {
     
   public:
 
-    PersistentMemory(String settingsfile, bool create=false);
+    PersistentMemory(String vault, bool create=false);
     ~PersistentMemory();
 
     explicit operator bool();

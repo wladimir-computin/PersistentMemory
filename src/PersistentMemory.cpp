@@ -7,9 +7,8 @@
 #include "PersistentMemory.h"
 
 
-PersistentMemory::PersistentMemory(String settingsfile, bool create) : filename("/" + settingsfile + ".json"), json(1024) {
+PersistentMemory::PersistentMemory(String vault, bool create) : filename("/" + vault + ".json"), json(1024) {
   printDebug("[PMEM] Open vault " + settingsfile);
-  //noInterrupts();
   File file = LittleFS.open(filename, "r");
   if (!file && create) {
     initsuccess = true;
@@ -19,7 +18,6 @@ PersistentMemory::PersistentMemory(String settingsfile, bool create) : filename(
   }
   file.close();
   createifnotfound = create;
-  //interrupts();
 }
 
 PersistentMemory::~PersistentMemory() {}
@@ -30,7 +28,6 @@ PersistentMemory::operator bool() {
 
 void PersistentMemory::format() {
 #ifdef ARDUINO_ARCH_ESP32
-  //noInterrupts();
   File dir = LittleFS.open("/");
   File file = dir.openNextFile();
   while(file){
@@ -40,16 +37,13 @@ void PersistentMemory::format() {
     }
 	file = dir.openNextFile();
   }
-  //interrupts();
 #else
-  //noInterrupts();
   Dir dir = LittleFS.openDir("/");
   while (dir.next()) {
     if (dir.fileName().endsWith(".json")) {
       LittleFS.remove(dir.fileName());
     }
   }
-  //interrupts();
 #endif
   printDebug("[PMEM] Format!");
 }
@@ -57,15 +51,12 @@ void PersistentMemory::format() {
 bool PersistentMemory::remove(String &vault) {
   String name = vault + ".json";
   printDebug("[PMEM] Removing vault " + vault);
-  //noInterrupts();
   bool out = LittleFS.remove(name); 
-  //interrupts();
   return out;
 }
 
 int PersistentMemory::listVaults(String * arr, int size) {
 #ifdef ARDUINO_ARCH_ESP32
-  //noInterrupts();
   File dir = LittleFS.open("/");
   int i = 0;
   File file = dir.openNextFile();
@@ -79,10 +70,8 @@ int PersistentMemory::listVaults(String * arr, int size) {
     }
 	file = dir.openNextFile();
   }
-  //interrupts();
   return i;
 #else
-  //noInterrupts();
   Dir dir = LittleFS.openDir("/");
   int i = 0;
   while (dir.next()) {
@@ -94,14 +83,12 @@ int PersistentMemory::listVaults(String * arr, int size) {
       }
     }
   }
-  //interrupts();
   return i;
 #endif
 
 }
 
 String PersistentMemory::toJSON(String &vault) {
-  //noInterrupts();
   File file = LittleFS.open("/" + vault + ".json", "r");
   String out = "";
   int size = file.size();
@@ -112,17 +99,14 @@ String PersistentMemory::toJSON(String &vault) {
     out = (char*)buf;
   }
   file.close();
-  //interrupts();
   return out;
 }
 
 void PersistentMemory::commit() {
   if (changed) {
-	//noInterrupts();
     File file = LittleFS.open(filename, "w");
     serializeJsonPretty(json, file);
     file.close();
-	//interrupts();
   }
 }
 
